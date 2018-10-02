@@ -5,20 +5,8 @@
 
 
 #define ledPin 2
-
-
-
-unsigned long intPeriodoEnvio=10000;
-
-
-char *type;
-char typeC[32];
-int presenceCount=0;
-bool presenceDetected=0;
-unsigned long lasttimeCheck=0;
-int ledPin=12;
-
-
+#define konkerURL (char*)"data.demo.konkerlabs.net:80"
+#define devicePrefix (char*)"S0101"
 
 
 
@@ -27,7 +15,7 @@ void ledCallback(byte* payload, unsigned int length){
     int i;
     int state=0;
     char *receivedMsg= new char[length];
-    Serial.print("Mensagem recebida [");
+    Serial.print("Message received [");
     Serial.print("led");
     Serial.print("] :");
     for (i = 0; i < length; i++) {
@@ -37,9 +25,9 @@ void ledCallback(byte* payload, unsigned int length){
 
     Serial.println(String(receivedMsg));
 
-    char ligado[8];
-    if(parseJSON_data(receivedMsg,"ligado",ligado)){
-        bool state =atoi(ligado);
+    char onoff[8];
+    if(parseJSON_data(receivedMsg,"onoff",onoff)){
+        bool state =atoi(onoff);
         digitalWrite(ledPin, state);
         Serial.println("Led : " + String(state));
     }else{ 
@@ -58,24 +46,16 @@ void setup(){
     //resetALL();
 
     //change flag to true to use encripted wifi password
-    konkerConfig((char*)"data.demo.konkerlabs.net:80",(char*)"S0101",false);
+    konkerConfig(konkerURL,devicePrefix,false);
 
     //statusUpdate();
 
     pinMode(ledPin, OUTPUT);
     
-    
-    pinMode(presence_pin, INPUT);
 
 	Serial.println("Setup finished");
-	//Serial.println("Turning off Wifi");
-	//client.disconnect();
-	//WiFi.mode(WIFI_OFF);
-	delay(1000);
 
-
-    lasttimeCheck = millis();
-
+	delay(100);
 }
 
 void loop(){
@@ -84,6 +64,5 @@ void loop(){
     delay(100);
 
     subHttp("led",ledCallback);
-    
 
 }

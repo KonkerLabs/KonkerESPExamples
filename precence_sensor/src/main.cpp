@@ -5,30 +5,24 @@
 
 
 #define presence_pin  5
-
+#define ledPin 12
+#define konkerURL (char*)"data.demo.konkerlabs.net:80"
+#define devicePrefix (char*)"S0101"
 
 char status_channel[] = "status";
 
-unsigned long intPeriodoEnvio=10000;
+unsigned long intSendPeriod=10000;
 
 
-int CURRENT_FIRMWARE_VERSION=1;
-
-
-char *type;
-char typeC[32];
 int presenceCount=0;
 bool presenceDetected=0;
 unsigned long lasttimeCheck=0;
-int ledPin=12;
 
 
-
-
-void enviaPresencas(){
+void sendPresences(){
       checkConnections();
       Serial.println("lasttimeCheck=" +(String)lasttimeCheck);
-      Serial.println("intPeriodoEnvio=" +(String)intPeriodoEnvio);
+      Serial.println("intSendPeriod=" +(String)intSendPeriod);
       lasttimeCheck = millis();
 
 
@@ -42,13 +36,13 @@ void enviaPresencas(){
       jsonMSG["p"] = presenceCount;
 
       jsonMSG.printTo(bufferJ, sizeof(bufferJ));
-      char mensagemjson[1024];
-      strcpy(mensagemjson,bufferJ);
-      Serial.println("Publicando no canal:" + (String)status_channel);
-      Serial.println("A mensagem:");
-      Serial.println(mensagemjson);
+      char mensagejson[1024];
+      strcpy(mensagejson,bufferJ);
+      Serial.println("Publishing at channel:" + (String)status_channel);
+      Serial.println("The message:");
+      Serial.println(mensagejson);
 
-      if(!pubMQTT(status_channel, mensagemjson)){
+      if(!pubMQTT(status_channel, mensagejson)){
         appendToFile(healthFile,(char*)"1", _mqttFailureAdress);
 
         delay(3000);
@@ -58,8 +52,8 @@ void enviaPresencas(){
 
 
 
-//atualiza contador de presença
-void presencafunc(){
+//update presence counter
+void presencefunc(){
   if (digitalRead(presence_pin) == LOW){
 
 		if(presenceDetected==0){
@@ -78,7 +72,7 @@ void ledCallback(byte* payload, unsigned int length){
     int i;
     int state=0;
     char *receivedMsg= new char[length];
-    Serial.print("Mensagem recebida [");
+    Serial.print("Message received [");
     Serial.print("led");
     Serial.print("] :");
     for (i = 0; i < length; i++) {
@@ -88,9 +82,9 @@ void ledCallback(byte* payload, unsigned int length){
 
     Serial.println(String(receivedMsg));
 
-    char ligado[8];
-    if(parseJSON_data(receivedMsg,"ligado",ligado)){
-        bool state =atoi(ligado);
+    char onoff[8];
+    if(parseJSON_data(receivedMsg,"onoff",onoff)){
+        bool state =atoi(onoff);
         digitalWrite(ledPin, state);
         Serial.println("Led : " + String(state));
     }else{ 
@@ -109,37 +103,29 @@ void setup(){
     //resetALL();
 
     //change flag to true to use encripted wifi password
-    konkerConfig((char*)"data.staging.konkerlabs.net:80",(char*)"S0101",false);
+    konkerConfig(konkerURL,devicePrefix,false);
 
-    //statusUpdate();
 
-    pinMode(ledPin, OUTPUT);
-    
-    
+    pinMode(ledPin, OUTPUT);   
     pinMode(presence_pin, INPUT);
 
 	Serial.println("Setup finished");
-	//Serial.println("Turning off Wifi");
-	//client.disconnect();
-	//WiFi.mode(WIFI_OFF);
+
 	delay(1000);
-
-
     lasttimeCheck = millis();
-
 }
 
 void loop(){
 
     konkerLoop();
     delay(100);
-    presencafunc();
+    presencefunc();
 
     subHttp("led",ledCallback);
     
-    if ((millis()-lasttimeCheck) > intPeriodoEnvio){
+    if ((millis()-lasttimeCheck) > intSendPeriod){
 
-        enviaPresencas();
+        sendPresences();
 
         checkForUpdates();
 
