@@ -3,6 +3,43 @@
 #include <konker.h>
 #include "./ttgo.h"
 
+char bufferMsg[251];
+
+
+void scanWifiandPost(){
+
+    rf95.send((uint8_t *) "newscann", 251);
+    rf95.waitPacketSent();
+
+    int n = WiFi.scanNetworks();
+    Serial.println("scan done");
+    if (n == 0) {
+        Serial.println("no networks found");
+    } else {
+        Serial.print(n);
+        Serial.println(" networks found");
+        for (int i = 0; i < n; ++i) {
+
+            String ssid = (String)WiFi.SSID(i);
+            String rssi = (String)WiFi.RSSI(i);
+
+            Serial.println("ssid: " + ssid);
+            Serial.println("rssi: " + rssi);
+
+
+            char mensagem[251];
+            strcpy (mensagem,ssid.c_str());
+            strcat (mensagem,":");
+            strcat (mensagem,rssi.c_str());
+
+
+
+            rf95.send((uint8_t *) mensagem, 251);
+            rf95.waitPacketSent();
+        }
+    }
+}
+
 
 
 void initDisplay(){
@@ -68,22 +105,7 @@ void loop(){
     // put your main code here, to run repeatedly:
     Serial.println("loop");
     delay(1000);
-    display.clear();
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(ArialMT_Plain_10);
 
-    display.drawString(0, 0, "Sending packet:");
-    display.drawString(90, 0, String(counter));
-    display.display();
-
-    char *msg = "hallo";
-    rf95.send((uint8_t *) msg, 5);
-    rf95.waitPacketSent();
-    counter++;
-
-	digitalWrite(LED, HIGH);
-	delay(100);
-	digitalWrite(LED, LOW);
-	delay(100);
+    scanWifiandPost();
     
 }

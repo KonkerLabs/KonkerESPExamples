@@ -101,7 +101,12 @@ void setup(){
 
 	//uncomment for tests
     //resetALL();
-
+    set_platform_credentials("mqtt.demo.konkerlabs.net", "1883", "<YOUR_DEVICE_USER>", "<YOUR_DEVICE_PASSWORD>", "data");
+    setWifiCredentialsNotEncripted("<CLIENT_WIFI>","<CLIENT_WIFI_PASSWORD>");
+    //OR IF YOU WHANT MORE THAN ONE WIFI (UP TO 3)
+    //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>");
+    //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>", "<CLIENT_WIFI3>","<CLIENT_WIFI_PASSWORD3>");
+    
     //change flag to true to use encripted wifi password
     konkerConfig(konkerURL,devicePrefix,false);
 

@@ -9,7 +9,7 @@
 #define devicePrefix (char*)"S0101"
 
 
-char status_channel[] = "status";
+
 
 
 void initDisplay(){
@@ -75,7 +75,7 @@ void pubLora(char *loraMsg, String rssi){
     jsonMSG.printTo(bufferJ, sizeof(bufferJ));
     char mensagemjson[1024];
     strcpy(mensagemjson,bufferJ);
-    pubMQTT(status_channel, mensagemjson);
+    pubMQTT("lora", mensagemjson);
 }
 
 void checkLora(){
@@ -107,15 +107,12 @@ void checkLora(){
                 receivedMsg[i] = (char)buf[i];
             }
             receivedMsg[i] = '\0';
+            Serial.println("");
             Serial.println("Received lora message: " + String(receivedMsg));
             Serial.println("Sending package to Konker..");
-            pubLora(receivedMsg,String(rf95.lastSNR()));
+            pubLora(receivedMsg,String(rf95.lastRssi()));
 
 
-            digitalWrite(LED, HIGH); // turn the LED on (HIGH is the voltage level)
-            delay(100);           // wait for a second
-            digitalWrite(LED, LOW);  // turn the LED off by making the voltage LOW			
-            delay(100);           // wait for a second
         }
     }
 }
@@ -129,7 +126,11 @@ void setup(){
 
 	//uncomment for tests
     //resetALL();
-
+    set_platform_credentials("mqtt.demo.konkerlabs.net", "1883", "<YOUR_DEVICE_USER>", "<YOUR_DEVICE_PASSWORD>", "data");
+    setWifiCredentialsNotEncripted("<CLIENT_WIFI>","<CLIENT_WIFI_PASSWORD>");
+    //OR IF YOU WHANT MORE THAN ONE WIFI (UP TO 3)
+    //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>");
+    //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>", "<CLIENT_WIFI3>","<CLIENT_WIFI_PASSWORD3>");
     //change flag to true to use encripted wifi password
     konkerConfig(konkerURL,devicePrefix,false);
 
