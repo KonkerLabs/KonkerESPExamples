@@ -132,7 +132,7 @@ void setup(){
     //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>");
     //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>", "<CLIENT_WIFI3>","<CLIENT_WIFI_PASSWORD3>");
     //change flag to true to use encripted wifi password
-    konkerConfig(konkerURL,devicePrefix,false);
+    //konkerConfig(konkerURL,devicePrefix,false);
 
 
     initLora();
@@ -140,7 +140,7 @@ void setup(){
 }
 
 void loop(){
-    konkerLoop();
+    //22konkerLoop();
 
     checkLora();
     

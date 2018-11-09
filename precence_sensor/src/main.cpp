@@ -4,8 +4,8 @@
 #include <konker.h>
 
 
-#define presence_pin  5
-#define ledPin 12
+#define presence_pin  D3
+#define ledPin 2
 #define konkerURL (char*)"data.demo.konkerlabs.net:80"
 #define devicePrefix (char*)"S0101"
 
@@ -101,14 +101,16 @@ void setup(){
 
 	//uncomment for tests
     //resetALL();
-    set_platform_credentials("mqtt.demo.konkerlabs.net", "1883", "<YOUR_DEVICE_USER>", "<YOUR_DEVICE_PASSWORD>", "data");
-    setWifiCredentialsNotEncripted("<CLIENT_WIFI>","<CLIENT_WIFI_PASSWORD>");
+    set_platform_credentials("mqtt.demo.konkerlabs.net", "1883", "cab2s3dpg50n", "qhAq0XB1v4vM", "data");
+    setWifiCredentialsNotEncripted("Erico","batatinha123");
     //OR IF YOU WHANT MORE THAN ONE WIFI (UP TO 3)
     //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>");
     //setWifiCredentialsNotEncripted("<CLIENT_WIFI1>","<CLIENT_WIFI_PASSWORD1>","<CLIENT_WIFI2>","<CLIENT_WIFI_PASSWORD2>", "<CLIENT_WIFI3>","<CLIENT_WIFI_PASSWORD3>");
     
     //change flag to true to use encripted wifi password
     konkerConfig(konkerURL,devicePrefix,false);
+
+
 
 
     pinMode(ledPin, OUTPUT);   

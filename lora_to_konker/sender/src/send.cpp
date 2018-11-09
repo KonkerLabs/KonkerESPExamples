@@ -5,7 +5,7 @@
 
 char bufferMsg[251];
 
-
+/*
 void scanWifiandPost(){
 
     rf95.send((uint8_t *) "newscann", 251);
@@ -39,9 +39,9 @@ void scanWifiandPost(){
         }
     }
 }
+*/
 
-
-
+/*
 void initDisplay(){
     pinMode(OLED_RST, OUTPUT);
     digitalWrite(OLED_RST, LOW); // low to reset OLED
@@ -51,11 +51,11 @@ void initDisplay(){
     display.init();
     display.flipScreenVertically();
     display.setFont(ArialMT_Plain_10);
-}
+}*/
 
 void initLora(){
 
-    initDisplay();
+    //initDisplay();
 
     pinMode(RFM95_RST, OUTPUT);
     digitalWrite(RFM95_RST, HIGH);
@@ -105,7 +105,8 @@ void loop(){
     // put your main code here, to run repeatedly:
     Serial.println("loop");
     delay(1000);
-
-    scanWifiandPost();
+                rf95.send((uint8_t *) "oi", 251);
+            rf95.waitPacketSent();1
+    //scanWifiandPost();
     
 }
